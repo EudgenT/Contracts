@@ -12,15 +12,20 @@
             constraintName="fk_contract_customer"
             onDelete="RESTRICT"
             onUpdate="RESTRICT"
-            referencedColumnNames="contractor_id"
-            referencedTableName="contractor"/>
+            referencedColumnNames="id"
+            referencedTableName="Contractor"/>
 
     <addForeignKeyConstraint baseColumnNames="executor"
             baseTableName="Contract"
             constraintName="fk_contract_executor"
             onDelete="RESTRICT"
             onUpdate="RESTRICT"
-            referencedColumnNames="contractor_id"
-            referencedTableName="contractor"/>
+            referencedColumnNames="id"
+            referencedTableName="Contractor"/>
+
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="Contract" constraintName="fk_contract_customer"/>
+            <dropForeignKeyConstraint baseTableName="Contract" constraintName="fk_contract_executor"/>
+        </rollback>
     </changeSet>
 </databaseChangeLog>
