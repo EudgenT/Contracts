@@ -7,15 +7,22 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet author="ShapovalAndrey" id="2">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="public" tableName="Contractor" />
+            </not>
+        </preConditions>
+
 	    <createTable tableName="Contractor">
-            <column name="id" type="int" autoIncrement="true">
-            <constraints primaryKey="true" nullable="false"/>
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="title" type="varchar(50)">
-            <constraints nullable="false"/>
+                <constraints nullable="false"/>
             </column>
             <column name="checking_account" type="int">
-            <constraints nullable="false"/>
+                <constraints nullable="false"/>
             </column>
 	    </createTable>
 

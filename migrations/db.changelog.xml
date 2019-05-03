@@ -5,18 +5,19 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
     <include file="changesets/Create_table_contracts.xml"/>
-    <changeSet author="AndreyShapoval" id="1">
+    <changeSet author="ShapovalAndrey" id="1">
         <tagDatabase tag="version_1.0.0"/>
     </changeSet>
 
     <include file="changesets/Create_table_contractor.xml"/>
-    <changeSet author="AndreyShapoval" id="2">
+    <changeSet author="ShapovalAndrey" id="2">
         <tagDatabase tag="version_1.0.0"/>
     </changeSet>
 
     <include file="changesets/addForeignKey_contract_to_contractor.xml"/>
-    <changeSet author="AndreyShapoval" id="3">
+    <changeSet author="ShapovalAndrey" id="3">
         <tagDatabase tag="version_1.0.0"/>
     </changeSet>
 

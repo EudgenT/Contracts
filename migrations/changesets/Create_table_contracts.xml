@@ -5,7 +5,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet author="AndreyShapoval" id="1">
+
+    <changeSet author="ShapovalAndrey" id="1">
+
+        <preConditions onFail="MARK_RAN">
+           <not>
+                <tableExists schemaName="public" tableName="Contract" />
+           </not>
+        </preConditions>
+
         <createTable tableName="Contract">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true"/>
@@ -18,8 +26,8 @@
             </column>
             <column name="start_date" type="DATE"/>
             <column name="end_date" type="DATE"/>
-            <column name="customer" type="int"/>
-            <column name="executor" type="int"/>
+            <column name="customer" type="UUID"/>
+            <column name="executor" type="UUID"/>
         </createTable>
 
         <rollback>
