@@ -4,7 +4,7 @@ from sqlalchemy.dialects.postgresql import UUID
 metadata = MetaData()
 
 Contract = Table(
-                 'Contract', metadata,
+                 'contract', metadata,
                  Column('id', UUID, primary_key=True),
                  Column('title', String(50), nullable=False),
                  Column('amount', Numeric),

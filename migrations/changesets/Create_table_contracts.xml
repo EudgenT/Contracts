@@ -10,11 +10,11 @@
 
         <preConditions onFail="MARK_RAN">
            <not>
-                <tableExists schemaName="public" tableName="Contract" />
+                <tableExists schemaName="public" tableName="contract" />
            </not>
         </preConditions>
 
-        <createTable tableName="Contract">
+        <createTable tableName="contract">
             <column name="id" type="uuid" defaultValueComputed="uuid_generate_v4()">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
@@ -36,7 +36,7 @@
         </createTable>
 
         <rollback>
-		    <dropTable tableName="Contract"/>
+		    <dropTable tableName="contract"/>
 	    </rollback>
 
     </changeSet>
