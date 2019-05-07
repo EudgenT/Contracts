@@ -11,14 +11,4 @@
         <tagDatabase tag="version_1.0.0"/>
     </changeSet>
 
-    <include file="changesets/Create_table_contractor.xml"/>
-    <changeSet author="ShapovalAndrey" id="2">
-        <tagDatabase tag="version_1.0.0"/>
-    </changeSet>
-
-    <include file="changesets/addForeignKey_contract_to_contractor.xml"/>
-    <changeSet author="ShapovalAndrey" id="3">
-        <tagDatabase tag="version_1.0.0"/>
-    </changeSet>
-
-</databaseChangeLog>
+  </databaseChangeLog>

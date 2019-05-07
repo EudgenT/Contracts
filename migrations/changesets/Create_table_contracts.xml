@@ -15,19 +15,24 @@
         </preConditions>
 
         <createTable tableName="Contract">
-            <column name="id" type="UUID">
+            <column name="id" type="uuid" defaultValueComputed="uuid_generate_v4()">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="title" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="amount" type="float">
-                   <constraints nullable="false"/>
+            <column name="amount" type="decimal" >
+                   <constraints nullable="false" />
             </column>
             <column name="start_date" type="DATE"/>
             <column name="end_date" type="DATE"/>
-            <column name="customer" type="UUID"/>
-            <column name="executor" type="UUID"/>
+            <column name="customer" type="varchar(50)">
+                    <constraints nullable="false"/>
+            </column>
+            <column name="executor" type="varchar(50)">
+                    <constraints nullable="false"/>
+            </column>
+
         </createTable>
 
         <rollback>
