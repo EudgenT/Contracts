@@ -12,6 +12,6 @@ Contract = Table(
                  Column('end_date', Date),
                  Column('customer', String(50), nullable=False),
                  Column('executor', String(50), nullable=False),
-                )
+)
 
 
