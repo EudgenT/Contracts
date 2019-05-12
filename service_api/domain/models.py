@@ -13,5 +13,3 @@ Contract = Table(
                  Column('customer', String(50), nullable=False),
                  Column('executor', String(50), nullable=False),
 )
-
-

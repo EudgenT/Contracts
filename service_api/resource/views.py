@@ -1,13 +1,10 @@
 from sanic import response
 from sanic.response import text
 from sanic.views import HTTPMethodView
-from .domain import *
+from Contracts.service_api.domain.domain import get_all_contracts, \
+    get_contract, create_contract, update_contract, delete_contract, \
+    get_contracts
 from .forms import ContractSchema
-
-
-class SmokeResource(HTTPMethodView):
-    def get(self, request):
-        return response.json({'message': 'Service enabled'}, headers={'Service': 'Contracts'}, status=200)
 
 
 class ContractsResource(HTTPMethodView):
@@ -40,3 +37,10 @@ class ContractDeleteResource(HTTPMethodView):
     async def delete(self, request, contact_id):
         await delete_contract(contact_id)
         return text('Deleted')
+
+
+class ContractJsonResource(HTTPMethodView):
+    async def get(self, request):
+        contracts = await get_contracts(request.json)
+        result = ContractSchema().dump(contracts, many=True)
+        return response.json(result.data)
