@@ -1,80 +1,105 @@
 from Contracts.service_api.domain.models import Contract
 from Contracts.database import connection
-from sqlalchemy import or_
+from sqlalchemy import column
+import sqlalchemy as sa
 
 
-async def get_all_contracts():
+async def filter_contracts(query):
     engine = await connection()
-    data = []
+    result = []
     async with engine.acquire() as conn:
-        async for row in conn.execute(Contract.select()):
-            data.append(row)
-    return data
+        selected_rows = await conn.execute(query)
+        async for row in selected_rows:
+            result.append(row)
+    return result
 
 
-async def get_contract(pk):
+async def get_response(fields, contract_id, title, customer,
+                       executor, start_period, end_period,
+                       amount_min, amount_max
+                       ):
+
+    columns = [column(item) for item in fields]
+    if contract_id[0]:
+        query = sa.sql.select(columns, Contract.c.id.in_(contract_id))
+    elif title[0]:
+        query = sa.sql.select(columns, Contract.c.title.in_(title))
+    elif customer[0]:
+        query = sa.sql.select(columns, Contract.c.customer.in_(customer))
+    elif executor[0]:
+        query = sa.sql.select(columns, Contract.c.executor.in_(executor))
+    else:
+        query = (
+            sa.sql.select(columns)
+            .where(Contract.c.start_date < end_period)
+            .where(Contract.c.end_date > start_period)
+            .where(Contract.c.amount > float(amount_min))
+            .where(Contract.c.amount < float(amount_max))
+        )
+    result = await filter_contracts(query)
+    return result
+
+
+async def get_args_from_url(request):
+    columns_contract = "id, title, amount, customer, executor, " \
+                       "start_date, end_date"
+    fields = request.args.get(
+                              "fields", columns_contract
+                              ).replace(' ', '').split(',')
+
+    id = request.args.get("id", '').replace(' ', '').split(',')
+    title = request.args.get("title", '').replace(' ', '').split(',')
+    customer = request.args.get("customer", '').replace(' ', '').split(',')
+    executor = request.args.get("executor", '').replace(' ', '').split(',')
+    amount_min = request.args.get("amount_min", 0)
+    amount_max = request.args.get("amount_max", 10 ** 10)
+    start_period = request.args.get("start_period", "1000-01-01")
+    end_period = request.args.get("end_period", "3000-01-01")
+
+    args = await get_response(fields, id, title, customer, executor,
+                              start_period, end_period, amount_min, amount_max
+                              )
+    return args
+
+
+async def create(json):
     engine = await connection()
-    data = []
     async with engine.acquire() as conn:
-        async for row in conn.execute(
-                Contract.select().where(Contract.c.id == pk)
-                                      ):
-            data.append(row)
-    return data
+        for item in json:
+            values = {
+                      "title": item["title"],
+                      "amount": item["amount"],
+                      "start_date": item["start_date"],
+                      "end_date": item["end_date"],
+                      "customer": item["customer"],
+                      "executor": item["executor"],
+                      }
+            await conn.execute(Contract.insert().values(values))
 
 
-async def create_contract(json):
+async def update(json):
     engine = await connection()
     async with engine.acquire() as conn:
-        await conn.execute(
-            Contract.insert().values(title=json['title'],
-                                     amount=json['amount'],
-                                     start_date=json['start_date'],
-                                     end_date=json['end_date'],
-                                     customer=json['customer'],
-                                     executor=json['executor']
-                                     )
-                           )
+        for item in json:
+            await conn.execute(
+                Contract.update()
+                .where(Contract.c.id == item["id"])
+                .values(
+                        title=item['title'],
+                        amount=item['amount'],
+                        start_date=item['start_date'],
+                        end_date=item['end_date'],
+                        customer=item['customer'],
+                        executor=item['executor']
+                        )
+                                )
 
 
-async def update_contract(json, pk):
+async def delete(request):
     engine = await connection()
     async with engine.acquire() as conn:
-        query = Contract.update().where(
-            Contract.c.id == pk).values(title=json['title'],
-                                        amount=json['amount'],
-                                        start_date=json['start_date'],
-                                        end_date=json['end_date'],
-                                        customer=json['customer'],
-                                        executor=json['executor']
-                                        )
-        await conn.execute(query)
-
-
-async def delete_contract(pk):
-    engine = await connection()
-    async with engine.acquire() as conn:
-        await conn.execute(Contract.delete().where(Contract.c.id == pk))
-
-
-async def get_contracts(json):
-    engine = await connection()
-    async with engine.acquire() as conn:
-        queryset = []
-        query = Contract.select().where(
-            or_(Contract.c.executor.in_(json.get("executor", ['None'])),
-                Contract.c.id.in_(
-                    json.get("id", ['00000000-0000-0000-0000-000000000000'])
-                                  ),
-                Contract.c.customer.in_(json.get("customer", ['None'])),
-                Contract.c.start_date.in_(
-                    json.get("start_date", ['2000-01-01'])
-                                          ),
-                Contract.c.end_date.in_(json.get("end_date", ['1000-01-01'])),
-                Contract.c.title.in_(json.get("title", ['None'])),
-                Contract.c.amount.in_(json.get("amount", [0]))
-                )
-                                        )
-        async for item in conn.execute(query):
-            queryset.append(item)
-    return queryset
+        args = request.args.get("id", '').replace(' ', '').split(',')
+        for contract_id in args:
+            await conn.execute(Contract.delete().where(
+                Contract.c.id == contract_id)
+                                                        )
