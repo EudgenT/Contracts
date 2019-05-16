@@ -4,10 +4,10 @@ from Contracts.service_api.resource.registration import SmokeResource, registrat
 
 app = Sanic()
 
-app.add_route(SmokeResource.as_view(), '/smoke')
+app.add_route(SmokeResource.as_view(), '/')
 app.add_route(Contracts.as_view(), '/contracts')
 
-app.add_task(registration)
+#app.add_task(registration)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8007)

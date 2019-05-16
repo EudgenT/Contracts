@@ -37,7 +37,7 @@ async def get_response(fields, contract_id, title, customer,
             .where(Contract.c.amount < float(amount_max))
         )
     result = await filter_contracts(query)
-    return result
+    return result[0:30]
 
 
 async def get_args_from_url(request):
@@ -49,8 +49,8 @@ async def get_args_from_url(request):
 
     id = request.args.get("id", '').replace(' ', '').split(',')
     title = request.args.get("title", '').replace(' ', '').split(',')
-    customer = request.args.get("customer", '').replace(' ', '').split(',')
-    executor = request.args.get("executor", '').replace(' ', '').split(',')
+    customer = list(request.args.get("customer", '').split(','))
+    executor = list(request.args.get("executor", '').split(','))
     amount_min = request.args.get("amount_min", 0)
     amount_max = request.args.get("amount_max", 10 ** 10)
     start_period = request.args.get("start_period", "1000-01-01")
@@ -65,14 +65,14 @@ async def get_args_from_url(request):
 async def create(json):
     engine = await connection()
     async with engine.acquire() as conn:
-        for item in json:
+        for item in json.get("insert", ""):
             values = {
                       "title": item["title"],
                       "amount": item["amount"],
                       "start_date": item["start_date"],
                       "end_date": item["end_date"],
                       "customer": item["customer"],
-                      "executor": item["executor"],
+                      "executor": item["executor"]
                       }
             await conn.execute(Contract.insert().values(values))
 
@@ -80,7 +80,7 @@ async def create(json):
 async def update(json):
     engine = await connection()
     async with engine.acquire() as conn:
-        for item in json:
+        for item in json.get("update", ""):
             await conn.execute(
                 Contract.update()
                 .where(Contract.c.id == item["id"])

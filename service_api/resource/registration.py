@@ -5,16 +5,10 @@ import logging
 
 
 async def registration():
-    sda = "http://0.0.0.0:30000/"
-    parameters = '?name=Contracts&host=0.0.0.0&port: 8007'
-    # data = {
-    #     "service": "Contracts",
-    #     "host": "0.0.0.0",
-    #     "port": 8007,
-    # }
+    sda = "http://10.4.105.222:5004/?name=contracts&ip=10.4.105.222&port=8007"
     try:
         async with aiohttp.ClientSession() as session:
-            await session.post(sda, data=parameters)
+            await session.post(sda)
 
     except Exception as exc:
         logging.error(exc)
