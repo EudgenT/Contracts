@@ -6,8 +6,3 @@ app = Sanic()
 
 app.add_route(SmokeResource.as_view(), '/')
 app.add_route(Contracts.as_view(), '/contracts')
-
-#app.add_task(registration)
-
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8007)

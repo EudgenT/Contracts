@@ -47,7 +47,7 @@ async def get_args_from_url(request):
                               "fields", columns_contract
                               ).replace(' ', '').split(',')
 
-    id = request.args.get("id", '').replace(' ', '').split(',')
+    contract_id = request.args.get("id", '').replace(' ', '').split(',')
     title = request.args.get("title", '').replace(' ', '').split(',')
     customer = list(request.args.get("customer", '').split(','))
     executor = list(request.args.get("executor", '').split(','))
@@ -56,7 +56,7 @@ async def get_args_from_url(request):
     start_period = request.args.get("start_period", "1000-01-01")
     end_period = request.args.get("end_period", "3000-01-01")
 
-    args = await get_response(fields, id, title, customer, executor,
+    args = await get_response(fields, contract_id, title, customer, executor,
                               start_period, end_period, amount_min, amount_max
                               )
     return args
