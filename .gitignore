@@ -2,3 +2,5 @@
 *pyc
 Trash
 .gitignore
+sdk
+lib
